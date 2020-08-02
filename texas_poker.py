@@ -1,11 +1,14 @@
 import random
+from collections import Counter
+from heapq import nlargest
+from typing import List, Tuple
 
 
 class Player():
 
     def __init__(self):
         self.cards = []
-        self.rank = ()
+        self.rank = {}
         self.rank_value = []
 
 
@@ -31,7 +34,7 @@ class Game():
     def shuffle_cards(self) -> None:
         for suit in ['spade', 'heart', 'diamond', 'club']:
             for index, face in enumerate(self.card_faces):
-                self.remain_cards.append((suit, index + 1))
+                self.remain_cards.append((suit, index + 2))
 
     def distribute_a_random_card(self) -> None:
         for player in self.players.values():
@@ -57,6 +60,23 @@ class Game():
             print(f'{player_number}: {player.cards}')
         print(f'Cards on board: {self.cards_on_board}')
 
+    def determine_each_player_rank(self) -> None:
+        for (player_number, player) in self.players.items():
+            self.determine_rank(player)
+
+    def determine_rank(self, player: Player) -> None:
+        all_cards = self.cards_on_board + player.cards
+        self.is_flush(all_cards)
+
+    def is_flush(self, all_cards: List[Tuple[str, int]]) -> List[int]:
+        result = []
+        calculate_dict = Counter([suit for suit, _ in all_cards])
+        most_common = calculate_dict.most_common(1)
+        if most_common[0][1] >= 5:
+            result = [value for suit, value in all_cards if suit == most_common[0][0]]
+            result = nlargest(5, result)
+        return result
+
 
 if __name__ == "__main__":
     game = Game()
@@ -73,3 +93,5 @@ if __name__ == "__main__":
     game.show_cards()
     game.distribute_a_random_card_on_board()
     game.show_cards()
+
+    game.determine_each_player_rank()
