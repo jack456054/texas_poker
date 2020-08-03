@@ -1,6 +1,7 @@
 import random
 from collections import Counter
 from heapq import nlargest
+from itertools import count, groupby
 from typing import List, Tuple
 
 
@@ -67,6 +68,7 @@ class Game():
     def determine_rank(self, player: Player) -> None:
         all_cards = self.cards_on_board + player.cards
         self.is_flush(all_cards)
+        self.is_straight(all_cards)
 
     def is_flush(self, all_cards: List[Tuple[str, int]]) -> List[int]:
         result = []
@@ -76,6 +78,17 @@ class Game():
             result = [value for suit, value in all_cards if suit == most_common[0][0]]
             result = nlargest(5, result)
         return result
+
+    def is_straight(self, all_cards: List[Tuple[str, int]]) -> List[int]:
+        values = list(set(sorted([card for _, card in all_cards])))
+        c = count()
+        result = max((list(g) for _, g in groupby(values, lambda x: x - next(c))), key=len)
+        if result == [2, 3, 4, 5] and 14 in values:
+            result.insert(0, 1)
+        if len(result) < 5:
+            return []
+        else:
+            return result[-1:-6:-1]
 
 
 if __name__ == "__main__":
