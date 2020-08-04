@@ -79,13 +79,11 @@ class Game():
             # straight flush:
             _, result = self.is_straight([(suit, value) for suit, value in all_cards if suit == most_common[0][0]])
             if result:
-                return 9, result
+                return (9, result)
 
             result = [value for suit, value in all_cards if suit == most_common[0][0]]
             result = nlargest(5, result)
-        if not result:
-            return 0, result
-        return 6, result
+        return (6, result) if result else (0, result)
 
     def is_straight(self, all_cards: List[Tuple[str, int]]) -> Tuple[int, List[int]]:
         values = list(set(sorted([card for _, card in all_cards])))
@@ -93,10 +91,7 @@ class Game():
         result = max((list(g) for _, g in groupby(values, lambda x: x - next(c))), key=len)
         if result == [2, 3, 4, 5] and 14 in values:
             result.insert(0, 1)
-        if len(result) < 5:
-            return 0, []
-        else:
-            return 5, result[-1:-6:-1]
+        return (0, []) if len(result) < 5 else (5, result[-1:-6:-1])
 
 
 if __name__ == "__main__":
