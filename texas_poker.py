@@ -10,7 +10,7 @@ class Player():
     def __init__(self):
         self.cards = []
         self.rank = {}
-        self.rank_value = []
+        self.rank_values = []
 
 
 class Game():
@@ -67,28 +67,36 @@ class Game():
 
     def determine_rank(self, player: Player) -> None:
         all_cards = self.cards_on_board + player.cards
-        self.is_flush(all_cards)
-        self.is_straight(all_cards)
+        rank, rank_values = self.is_flush(all_cards)
+        rank, rank_values = self.is_straight(all_cards)
 
-    def is_flush(self, all_cards: List[Tuple[str, int]]) -> List[int]:
+    def is_flush(self, all_cards: List[Tuple[str, int]]) -> Tuple[int, List[int]]:
         result = []
         calculate_dict = Counter([suit for suit, _ in all_cards])
         most_common = calculate_dict.most_common(1)
         if most_common[0][1] >= 5:
+
+            # straight flush:
+            _, result = self.is_straight([(suit, value) for suit, value in all_cards if suit == most_common[0][0]])
+            if result:
+                return 9, result
+
             result = [value for suit, value in all_cards if suit == most_common[0][0]]
             result = nlargest(5, result)
-        return result
+        if not result:
+            return 0, result
+        return 6, result
 
-    def is_straight(self, all_cards: List[Tuple[str, int]]) -> List[int]:
+    def is_straight(self, all_cards: List[Tuple[str, int]]) -> Tuple[int, List[int]]:
         values = list(set(sorted([card for _, card in all_cards])))
         c = count()
         result = max((list(g) for _, g in groupby(values, lambda x: x - next(c))), key=len)
         if result == [2, 3, 4, 5] and 14 in values:
             result.insert(0, 1)
         if len(result) < 5:
-            return []
+            return 0, []
         else:
-            return result[-1:-6:-1]
+            return 5, result[-1:-6:-1]
 
 
 if __name__ == "__main__":
