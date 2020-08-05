@@ -59,3 +59,16 @@ def test_is_straight():
     result = game.is_straight(all_cards)
     expected = (5, [5, 4, 3, 2, 1])
     assert(result == expected)
+
+
+def test_determine_duplicates():
+    game = Game()
+    all_cards = [('diamond', 10), ('spade', 10), ('club', 10), ('heart', 10), ('club', 2), ('club', 7), ('heart', 14)]
+    result = game.determine_duplicates(all_cards)
+    expected = (8, [10, 10, 10, 10, 14])
+    assert(result == expected)
+    game = Game()
+    all_cards = [('diamond', 10), ('spade', 10), ('club', 10), ('heart', 10), ('club', 2), ('club', 7), ('heart', 3)]
+    result = game.determine_duplicates(all_cards)
+    expected = (8, [10, 10, 10, 10, 7])
+    assert(result == expected)

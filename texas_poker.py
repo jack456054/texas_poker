@@ -63,12 +63,19 @@ class Game():
 
     def determine_each_player_rank(self) -> None:
         for (player_number, player) in self.players.items():
-            self.determine_rank(player)
+            player.rank, player.rank_values = self.determine_rank(player)
 
-    def determine_rank(self, player: Player) -> None:
+    def determine_rank(self, player: Player) -> Tuple[int, List[int]]:
         all_cards = self.cards_on_board + player.cards
         rank, rank_values = self.is_flush(all_cards)
+        if rank:
+            return (rank, rank_values)
         rank, rank_values = self.is_straight(all_cards)
+        if rank:
+            return (rank, rank_values)
+        rank, rank_values = self.determine_duplicates(all_cards)
+        if rank:
+            return (rank, rank_values)
 
     def is_flush(self, all_cards: List[Tuple[str, int]]) -> Tuple[int, List[int]]:
         result = []
@@ -92,6 +99,16 @@ class Game():
         if result == [2, 3, 4, 5] and 14 in values:
             result.insert(0, 1)
         return (0, []) if len(result) < 5 else (5, result[-1:-6:-1])
+
+    def determine_duplicates(self, all_cards: List[Tuple[str, int]]) -> Tuple[int, List[int]]:
+        values = sorted([value for _, value in all_cards])
+        calculate_dict = Counter(values)
+        most_common = calculate_dict.most_common()
+        print(most_common)
+        if most_common[0][1] == 4:
+            values = filter(lambda x: x != most_common[0][0], values)
+            second_biggest = max(values)
+            return (8, [most_common[0][0]] * 4 + [second_biggest])
 
 
 if __name__ == "__main__":
