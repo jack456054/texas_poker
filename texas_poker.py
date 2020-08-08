@@ -63,10 +63,10 @@ class Game():
 
     def determine_each_player_rank(self) -> None:
         for (player_number, player) in self.players.items():
-            player.rank, player.rank_values = self.determine_rank(player)
+            all_cards = self.cards_on_board + player.cards
+            player.rank, player.rank_values = self.determine_rank(all_cards)
 
-    def determine_rank(self, player: Player) -> Tuple[int, List[int]]:
-        all_cards = self.cards_on_board + player.cards
+    def determine_rank(self, all_cards: List[Tuple[str, int]]) -> Tuple[int, List[int]]:
         rank, rank_values = self.is_flush(all_cards)
         if rank:
             return (rank, rank_values)
@@ -83,7 +83,7 @@ class Game():
         most_common = calculate_dict.most_common(1)
         if most_common[0][1] >= 5:
 
-            # straight flush:
+            # Straight flush:
             _, result = self.is_straight([(suit, value) for suit, value in all_cards if suit == most_common[0][0]])
             if result:
                 return (9, result)
@@ -104,11 +104,40 @@ class Game():
         values = sorted([value for _, value in all_cards])
         calculate_dict = Counter(values)
         most_common = calculate_dict.most_common()
-        print(most_common)
+
+        # Four of a kind.
         if most_common[0][1] == 4:
-            values = filter(lambda x: x != most_common[0][0], values)
-            second_biggest = max(values)
-            return (8, [most_common[0][0]] * 4 + [second_biggest])
+            values = list(filter(lambda x: x != most_common[0][0], values))
+            return (8, [most_common[0][0]] * 4 + [values[-1]])
+
+        # Full house or three of a kind.
+        if most_common[0][1] == 3:
+            if most_common[1][1] == 3:  # Full house.
+                return (7, [max(most_common[0][0], most_common[1][0])] * 3 + [min(most_common[0][0], most_common[1][0])] * 2)
+            if most_common[1][1] == 2:
+                if most_common[2][1] == 2:
+                    return (7, [most_common[0][0]] * 3 + [max(most_common[1][0], most_common[2][0])] * 2)
+                else:
+                    return (7, [most_common[0][0]] * 3 + [most_common[1][0]] * 2)
+            else:  # Three of a kind.
+                values = list(filter(lambda x: x != most_common[0][0], values))
+                return (4, [most_common[0][0]] * 3 + values[-1:-3:-1])
+
+        # Two pairs or one pair.
+        if most_common[0][1] == 2:
+            if most_common[1][1] == 2:  # Two pairs.
+                if most_common[2][1] == 2:
+                    pair_list = sorted([most_common[0][0], most_common[1][0], most_common[2][0]])
+                    values = list(filter(lambda x: x != pair_list[-1] and x != pair_list[-2], values))
+                else:
+                    pair_list = sorted([most_common[0][0], most_common[1][0]])
+                    values = list(filter(lambda x: x not in pair_list, values))
+                return (3, [pair_list[-1]] * 2 + [pair_list[-2]] * 2 + [values[-1]])
+            else:  # One pair.
+                values = list(filter(lambda x: x != most_common[0][0], values))
+                return (2, [most_common[0][0]] * 2 + values[-1:-4:-1])
+
+        return (1, values[-1:-6:-1])  # Nothing.
 
 
 if __name__ == "__main__":
