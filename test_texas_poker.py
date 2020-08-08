@@ -254,5 +254,47 @@ def test_determine_rank():
     assert(result == expected)
 
 
-def determine_winner(self):
+def test_determine_winners():
+    game = Game()
+    game.shuffle_cards()
+    game.set_players(3)
+    game.players['Player_1'].cards.append(game.distribute_a_card(('spade', 9)))
+    game.players['Player_1'].cards.append(game.distribute_a_card(('diamond', 2)))
+    game.players['Player_2'].cards.append(game.distribute_a_card(('club', 9)))
+    game.players['Player_2'].cards.append(game.distribute_a_card(('spade', 6)))
+    game.players['Player_3'].cards.append(game.distribute_a_card(('heart', 8)))
+    game.players['Player_3'].cards.append(game.distribute_a_card(('heart', 5)))
+    game.distribute_a_card_on_board(('club', 3))
+    game.distribute_a_card_on_board(('diamond', 9))
+    game.distribute_a_card_on_board(('club', 8))
+    game.distribute_a_card_on_board(('heart', 7))
+    game.distribute_a_card_on_board(('club', 14))
+    game.show_cards()
+
     game.determine_each_player_rank()
+    game.show_each_player_rank()
+    result = game.determine_winners()
+    expected = ['Player_1', 'Player_2']
+    assert(result == expected)
+
+    game = Game()
+    game.shuffle_cards()
+    game.set_players(3)
+    game.players['Player_1'].cards.append(game.distribute_a_card(('spade', 9)))
+    game.players['Player_1'].cards.append(game.distribute_a_card(('diamond', 2)))
+    game.players['Player_2'].cards.append(game.distribute_a_card(('club', 9)))
+    game.players['Player_2'].cards.append(game.distribute_a_card(('club', 6)))
+    game.players['Player_3'].cards.append(game.distribute_a_card(('heart', 8)))
+    game.players['Player_3'].cards.append(game.distribute_a_card(('heart', 5)))
+    game.distribute_a_card_on_board(('club', 3))
+    game.distribute_a_card_on_board(('diamond', 9))
+    game.distribute_a_card_on_board(('club', 8))
+    game.distribute_a_card_on_board(('heart', 7))
+    game.distribute_a_card_on_board(('club', 14))
+    game.show_cards()
+
+    game.determine_each_player_rank()
+    game.show_each_player_rank()
+    result = game.determine_winners()
+    expected = ['Player_2']
+    assert(result == expected)

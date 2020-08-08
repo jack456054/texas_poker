@@ -163,18 +163,25 @@ class Game():
         for (player_number, player) in self.players.items():
             print(f'{player_number}: {self.all_ranks[player.rank]}, {self.card_value_mapping(player.rank_values)}')
 
-    def determine_winner(self) -> None:
+    def determine_winners(self) -> List[str]:
+        winners = []
         winner_combination = max([(player.rank, player.rank_values) for _, player in self.players.items()])
-        print('Winner(s):')
         for player_number, player in self.players.items():
             if (player.rank, player.rank_values) == winner_combination:
-                print(f'* {player_number}')
+                winners.append(player_number)
+        return winners
+
+    def show_winners(self) -> None:
+        winners = self.determine_winners()
+        print('Winner(s): ')
+        for winner in winners:
+            print(f'* {winner}')
 
 
 if __name__ == "__main__":
     game = Game()
     game.shuffle_cards()
-    game.set_players(3)
+    game.set_players(5)
     game.distribute_a_card_to_players()
     game.distribute_a_card_to_players()
     # game.show_cards()
@@ -189,4 +196,4 @@ if __name__ == "__main__":
 
     game.determine_each_player_rank()
     game.show_each_player_rank()
-    game.determine_winner()
+    game.show_winners()
