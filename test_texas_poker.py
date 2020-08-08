@@ -1,19 +1,60 @@
-import pytest
-
 from texas_poker import Game
+
+
+def test_shuffle_cards():
+    game = Game()
+    game.shuffle_cards()
+    assert(len(game.remain_cards) == 52)
+
+
+def test_distribute_a_card_to_players():
+    game = Game()
+    game.set_players(3)
+    game.shuffle_cards()
+    game.distribute_a_card_to_players()
+    assert(len(game.remain_cards) == 49)
+    game.distribute_a_card_to_players()
+    assert(len(game.remain_cards) == 46)
+
+
+def test_distribute_a_card():
+    game = Game()
+    game.set_players(3)
+    game.shuffle_cards()
+    card = ('spade', 14)
+    game.players['Player_1'].cards.append(game.distribute_a_card(card))
+    assert(len(game.remain_cards) == 51)
+    assert(card not in game.remain_cards)
+    assert(card in game.players['Player_1'].cards)
+
+
+def test_distribute_a_card_on_board():
+    game = Game()
+    game.set_players(3)
+    game.shuffle_cards()
+    game.distribute_a_card_on_board()
+    assert(len(game.remain_cards) == 51)
+    game.distribute_a_card_on_board()
+    assert(len(game.remain_cards) == 50)
+
+
+def test_set_players():
+    game = Game()
+    game.set_players(3)
+    assert(len(game.players) == 3)
 
 
 def test_distribution():
     game = Game()
     game.shuffle_cards()
     game.set_players(3)
-    game.distribute_a_random_card()
-    game.distribute_a_random_card()
-    game.distribute_a_random_card_on_board()
-    game.distribute_a_random_card_on_board()
-    game.distribute_a_random_card_on_board()
-    game.distribute_a_random_card_on_board()
-    game.distribute_a_random_card_on_board()
+    game.distribute_a_card_to_players()
+    game.distribute_a_card_to_players()
+    game.distribute_a_card_on_board()
+    game.distribute_a_card_on_board()
+    game.distribute_a_card_on_board()
+    game.distribute_a_card_on_board()
+    game.distribute_a_card_on_board()
     assert(len(game.players) == 3)
     assert(len(game.players['Player_1'].cards) == 2)
     assert(len(game.cards_on_board) == 5)
@@ -211,3 +252,7 @@ def test_determine_rank():
     result = game.determine_rank(all_cards)
     expected = (1, [14, 11, 10, 8, 7])
     assert(result == expected)
+
+
+def determine_winner(self):
+    game.determine_each_player_rank()
