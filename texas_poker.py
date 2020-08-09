@@ -177,23 +177,26 @@ class Game():
         for winner in winners:
             print(f'* {winner}')
 
+    def game_start(self, number_of_players: int = 3) -> None:
+        self.shuffle_cards()
+        self.set_players(number_of_players)
+        self.distribute_a_card_to_players()
+        self.distribute_a_card_to_players()
+        # self.show_cards()
+        self.distribute_a_card_on_board()
+        self.distribute_a_card_on_board()
+        self.distribute_a_card_on_board()
+        # self.show_cards()
+        self.distribute_a_card_on_board()
+        # self.show_cards()
+        self.distribute_a_card_on_board()
+        self.show_cards()
+
+        self.determine_each_player_rank()
+        self.show_each_player_rank()
+        self.show_winners()
+
 
 if __name__ == "__main__":
     game = Game()
-    game.shuffle_cards()
-    game.set_players(5)
-    game.distribute_a_card_to_players()
-    game.distribute_a_card_to_players()
-    # game.show_cards()
-    game.distribute_a_card_on_board()
-    game.distribute_a_card_on_board()
-    game.distribute_a_card_on_board()
-    # game.show_cards()
-    game.distribute_a_card_on_board()
-    # game.show_cards()
-    game.distribute_a_card_on_board()
-    game.show_cards()
-
-    game.determine_each_player_rank()
-    game.show_each_player_rank()
-    game.show_winners()
+    game.game_start(5)
