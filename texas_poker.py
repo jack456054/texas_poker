@@ -178,20 +178,37 @@ class Game():
             print(f'* {winner}')
 
     def game_start(self, number_of_players: int = 3) -> None:
+        self.phase_0(number_of_players)
+        self.phase_1()
+        self.phase_2()
+        self.phase_3()
+        self.phase_4()
+        self.phase_5()
+
+    def phase_0(self, number_of_players: int = 3) -> None:
         self.shuffle_cards()
         self.set_players(number_of_players)
+
+    def phase_1(self) -> None:
         self.distribute_a_card_to_players()
         self.distribute_a_card_to_players()
         # self.show_cards()
+
+    def phase_2(self) -> None:
         self.distribute_a_card_on_board()
         self.distribute_a_card_on_board()
         self.distribute_a_card_on_board()
         # self.show_cards()
+
+    def phase_3(self) -> None:
         self.distribute_a_card_on_board()
         # self.show_cards()
+
+    def phase_4(self) -> None:
         self.distribute_a_card_on_board()
         self.show_cards()
 
+    def phase_5(self) -> None:
         self.determine_each_player_rank()
         self.show_each_player_rank()
         self.show_winners()
