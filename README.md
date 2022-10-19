@@ -8,3 +8,4 @@
 ## Tools
 - Python
 - pytest
+- Poetry
